@@ -24,28 +24,28 @@ n = size(A,2); %%% No. of variables   = No of cols
 
 %% Phase III: To choose nCm Basic solutions
 if(n>m)
-nCm=nchoosek(n,m) %Total no. of Basic solutions
-pair=nchoosek(1:n,m) %Pair of Basic soultions
-%% Phase IV and V: To construct the Basic solution and To check BFS.
-sol=[]; %Default solution is zero.
- for i=1:nCm
-    y=zeros(n,1)
-    x=A(:,pair(i,:))\b
-%To check the feasibility condition
-    if all(x>=0 & x~=inf & x~=-inf)
-    y(pair(i,:))=x
-    sol=[sol, y]
+    nCm = nchoosek(n,m);    %%% Total no. of Basic solutions
+    pair = nchoosek(1:n,m); %%% Pair of Basic soultions
+    % Phase IV and V: To construct the Basic solution and To check BFS.
+    sol=[]; % Default solution is zero.
+     for i=1:nCm
+        y = zeros(n,1);
+        x = A(:, pair(i, :)) \ b;
+    % To check the feasibility condition
+        if all(x>=0 & x~=inf & x~=-inf)
+            y(pair(i, :)) = x;
+            sol = [sol, y];
+        end
     end
-  end
 else
     error('nCm does not exists')
 end
 %% Phase VI: To find the objective function value
-Z=C*sol
-%find the optimal value
-[Zmax, Zindex]=max(Z)
-bfs=sol(:,Zindex)
+Z = C*sol;
+% find the optimal value
+[Zmax, Zindex] = max(Z);
+bfs = sol(:,Zindex);
 %% Phase VII: To print all the solutions
-optimal_value=[bfs' Zmax]
-optimal_bfs=array2table(optimal_value)
+optimal_value = [bfs' Zmax];
+optimal_bfs = array2table(optimal_value);
 optimal_bfs.Properties.VariableNames(1:size(optimal_bfs,2))={'x_1','x_2','x_3','x_4','Z'}
