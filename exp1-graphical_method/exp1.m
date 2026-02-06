@@ -1,20 +1,22 @@
-% MATLAB CODE FOR GRAPHICAL METHOD
+%{
+    MATLAB CODE FOR GRAPHICAL METHOD
 
-% Max Z = 6x1 + 11x2
-% s.t.  2x1 +  x2 <= 104
-%        x1 + 2x2 <= 76
-%       x1, x2 >= 0
+    Max Z = 6x1 + 11x2
+    s.t.  2x1 +  x2 <= 104
+           x1 + 2x2 <= 76
+          x1, x2 >= 0
+%}
 
 format short;
 clear all;
 clc;
 
-% Phase 1: Input parameters
+%% Phase 1: Input parameters
 C = [6 11];     %%% Cost of objective function
 A = [2 1; 1 2]; %%% Constrained coefficients
 b = [104; 76];  %%% Constraint values
 
-% Phase 2: Plotting of graph
+%% Phase 2: Plotting of graph
 y1 = 0:max(b); %%% Values of x1>=0 to try
 x21 = (b(1) - A(1, 1) * y1) ./ A(1, 2); %%% Values of x2 from constraint 1
 x22 = (b(2) - A(2, 1) * y1) ./ A(2, 2); %%% Values of x2 from constraint 2
@@ -30,19 +32,19 @@ ylabel("Value of x2");
 title("Graph of x1 vs x2");
 legend("2x1 +  x2 <= 104", " x1 + 2x2 <= 76");
 
-% Phase 3: Finding corner points from graphs
+%% Phase 3: Finding corner points from graphs
 cx1 = find(y1==0); %%% where x1 is 0
 c1 = find(x21==0); %%% where x2 for constraint 1 is 0
-%%% finding the coordinates of the region
-line1 = [y1(:, [c1, cx1]); x21(:, [c1, cx1])]'
+%%% finding the coordinates of the region by transposing matrix
+line1 = [y1(:, [c1, cx1]); x21(:, [c1, cx1])]';
 
 %%% doing same with line2
 c2 = find(x22==0);
-line2 = [y1(:, [c2, cx1]); x22(:, [c2, cx1])]'
+line2 = [y1(:, [c2, cx1]); x22(:, [c2, cx1])]';
 
 corpt = unique([line1; line2], "rows")
 
-% Phase 4: Find the point of intersection
+%% Phase 4: Find the point of intersection
 SA = [0; 0];
 for i = 1:size(A, 1)
     s1 = A(i, :);
@@ -58,13 +60,13 @@ for i = 1:size(A, 1)
         SA = [SA X];
     end
 end
-ptt = SA';
+ptt = SA'
 
-% Phase 5: Find ALL the corner points
+%% Phase 5: Find ALL the corner points
 allpt = [ptt; corpt];
-points = unique(allpt, "rows");
+points = unique(allpt, "rows")
 
-% Phase 6: Find feasable region(s)
+%% Phase 6: Find feasable region(s)
 for i=1:size(points, 1)
     const1(i) = A(1, 1)*points(i, 1) + A(1, 2)*points(i, 2) - b(1);
     const2(i) = A(2, 1)*points(i, 1) + A(2, 2)*points(i, 2) - b(2);
@@ -74,10 +76,35 @@ k2 = find(const2 > 0);
 k = unique([k1 k2]);
 points(k, :) = [];
 
-% Phase 7: Compute objective function
+%% Phase 7: Compute objective function
 value = points * C';
-table = [points value]
+table = [points value];
 [obj, index] = max(value);
 x1 = points(index, 1);
 x2 = points(index, 2);
-fprintf("objective value is %f at (%f, %f)", obj, x1, x2);
+fprintf("objective value is %.2f at (%.2f, %.2f)\n", obj, x1, x2);
+
+%% Phase 8: Find optimal value
+
+% Plot feasible region and optimal point on the existing graph
+hold on;
+% Shade feasible region by plotting the polygon of feasible points if there are >=3 points
+if size(points,1) >= 3
+    K = convhull(points(:,1), points(:,2));
+    patch(points(K,1), points(K,2), [0.9 0.9 1], 'FaceAlpha', 0.4, 'EdgeColor', 'none');
+end
+
+% Plot feasible corner points
+plot(points(:,1), points(:,2), 'bo', 'MarkerFaceColor', 'b');
+
+% Plot optimal point
+plot(x1, x2, 'kp', 'MarkerSize', 12, 'MarkerFaceColor', 'y');
+
+% Annotate optimal point
+text(x1, x2, sprintf('  (%.2f, %.2f)', x1, x2), 'VerticalAlignment', 'bottom');
+
+xlim([0, max(y1)]);
+ylim([0, max([x21, x22, points(:,2)'] )]);
+
+grid on;
+hold off;
