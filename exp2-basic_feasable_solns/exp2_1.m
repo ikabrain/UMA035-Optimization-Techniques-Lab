@@ -5,7 +5,7 @@
     Subject to 2x1 + 3x2 -  x3 + 4x4 = 8
                 x1 - 2x2 + 6x3 - 7x4 =-3
             x1,x2,x3,x4>=0
-    (Already includes SURPLUS added to constraints!)
+    (Already includes SLACK/SURPLUS added to constraints!)
 %}
 
 
@@ -40,12 +40,14 @@ if(n>m)
 else
     error('nCm does not exists')
 end
+
 %% Phase VI: To find the objective function value
 Z = C*sol;
 % find the optimal value
 [Zmax, Zindex] = max(Z);
 bfs = sol(:,Zindex);
+
 %% Phase VII: To print all the solutions
 optimal_value = [bfs' Zmax];
 optimal_bfs = array2table(optimal_value);
-optimal_bfs.Properties.VariableNames(1:size(optimal_bfs,2))={'x_1','x_2','x_3','x_4','Z'}
+optimal_bfs.Properties.VariableNames(1:size(optimal_bfs,2)) = {'x_1','x_2','x_3','x_4','Z'}
