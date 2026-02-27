@@ -13,25 +13,24 @@ format short;
 clear all;
 clc;
 
-%% Phase I: Input Parameters
+%% Phase 1: Input Parameters
 C = [2, 3, 4, 7];               %%% Cost Coefficients
 A = [2, 3,-1, 4; 1, -2, 6, -7]; %%% Coefficient Matrix
 b = [8; -3];                    %%% Right hand side
 
-%% Phase II: Define no. of variables and no. of constraints
-m = size(A,1); %%% No. of constraints = No of rows
-n = size(A,2); %%% No. of variables   = No of cols
+m = size(A,1); %%% m = No. of constraints = No of rows
+n = size(A,2); %%% n = No. of variables   = No of cols
 
-%% Phase III: To choose nCm Basic solutions
+%% Phase 2: To choose nCm Basic solutions
 if(n>m)
     nCm = nchoosek(n,m);    %%% Total no. of Basic solutions
-    pair = nchoosek(1:n,m); %%% Pair of Basic soultions
-    % Phase IV and V: To construct the Basic solution and To check BFS.
+    pair = nchoosek(1:n,m); %%% Forms Pairs of Basic soultions
+    %% Phase IV and V: To construct the Basic solution and To check BFS.
     sol=[]; % Default solution is zero.
      for i=1:nCm
         y = zeros(n,1);
         x = A(:, pair(i, :)) \ b;
-    % To check the feasibility condition
+    %%% To check the feasibility condition
         if all(x>=0 & x~=inf & x~=-inf)
             y(pair(i, :)) = x;
             sol = [sol, y];
@@ -41,13 +40,19 @@ else
     error('nCm does not exists')
 end
 
-%% Phase VI: To find the objective function value
-Z = C*sol;
-% find the optimal value
+%% Phase 3: To find the objective function & optimal value
+Z = sol*C';
+sol_withz = [sol' Z];
+sol_table = array2table(sol_withz);
+sol_table.Properties.VariableNames(1:size(sol_table,2)) = {'x_1','x_2','x_3','x_4','Z'};
+disp(sol_table);
+
+%% find the optimal value
 [Zmax, Zindex] = max(Z);
 bfs = sol(:,Zindex);
 
-%% Phase VII: To print all the solutions
+%% Phase 4: To print optimal solution
 optimal_value = [bfs' Zmax];
 optimal_bfs = array2table(optimal_value);
-optimal_bfs.Properties.VariableNames(1:size(optimal_bfs,2)) = {'x_1','x_2','x_3','x_4','Z'}
+optimal_bfs.Properties.VariableNames(1:size(optimal_bfs,2)) = {'x_1','x_2','x_3','x_4','Z'};
+disp(optimal_bfs);
