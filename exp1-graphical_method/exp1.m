@@ -113,13 +113,13 @@ value = points * C';
 table = [points value];
 
 %%% Step-24: Find OPTIMAL value & point index (max here)
-[obj, index] = max(value);
+[z, index] = max(value);
 
 %%% Step-25: Store & display value
 x1 = points(index, 1);
 x2 = points(index, 2);
-fprintf("objective value is %.2f at (%.2f, %.2f)\n", obj, x1, x2);
+fprintf("objective value is %.2f at (%.2f, %.2f)\n", z, x1, x2);
 
 %%% Step-26: Plot & annotate optimal point
 plot(x1, x2, 'kp', 'MarkerSize', 12, 'MarkerFaceColor', 'y');
-text(x1, x2, sprintf('  (%.2f, %.2f)', x1, x2), 'VerticalAlignment', 'bottom');
+text(x1, x2, sprintf('  (%.2f, %.2f)', x1, x2), 'VerticalAlignment', 'bottom');f
