@@ -68,8 +68,8 @@ for i = 1:size(A, 1)
         %%% Step-13: Use X = inv(A) / b to solve for point of intersection & store in temp soln
         A1 = [s1; s2];
         B1 = [b1; b2];        
-        x1 = A1 \ B1;          %%% Returns a COLUMN vector
-        SA = [SA x1];
+        X = A1 \ B1;          %%% Returns a COLUMN vector
+        SA = [SA X];
     end
 end
 
