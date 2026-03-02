@@ -38,7 +38,7 @@ if(n>m)
     end
     BS = S';
 else
-    error('nCm does not exists')
+    error('nCm does not exist: No of constraints more than decision variables!');
 end
 
 %% Phase 6: Compute objective function
