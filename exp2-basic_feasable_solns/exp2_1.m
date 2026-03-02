@@ -48,5 +48,7 @@ resultTable = [BS val];
 %% Phase 7: Find optimal value & display solution
 [opval, opidx] = max(val);
 optab = resultTable(opidx, :);
+
+fprintf('Optimal BFS is:-\n');
 OPTIMAL_BFS = array2table(optab, 'VariableNames', {'x1', 'x2', 'x3', 'x4', 'Z'});
 disp(OPTIMAL_BFS);
