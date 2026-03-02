@@ -1,5 +1,5 @@
 %{
-    Minimize Z = 3x1 + 2x2
+    Maximise/Minimize Z = 3x1 + 2x2
     Subject to  2x1 + 4x2 <= 8
                 3x1 + 5x2 <= 15
                 x1 >= 0 , x2 >= 0

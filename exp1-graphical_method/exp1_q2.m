@@ -10,8 +10,8 @@ clear all;
 clc;
 
 C = [3 2];
-A = [-2 -4; -3 -5];
-b = [-8; -15];
+A = [2 4; 3 5];
+b = [8; 15];
 
 x1 = 0:1:max(abs(b));
 x21 = (b(1) - A(1, 1) * x1) ./ A(1, 2);
@@ -63,8 +63,9 @@ for i = 1: size(points, 1)
     cons2(i) = A(2, 1)*px1 + A(2, 2)*px2 - b(2);
 end
 
-k1 = find(cons1 > 0);
-k2 = find(cons2 > 0);
+%%% k1 & k2 changed to keep it in canonical form!
+k1 = find(cons1 < 0);
+k2 = find(cons2 < 0);
 k3 = find(points(:, 1) < 0);
 k4 = find(points(:, 2) < 0);
 k = unique([k1 k2 k3 k4]);

@@ -12,8 +12,9 @@ clear all;
 clc;
 
 %% Phase 1: Input parameters
-%%% Step-1: Let Max Z = C'X
-%%% subject to AX = b
+%%% Step-1: Let in canonical form,
+%%% Max Z = C'X
+%%% subject to AX <= b
 C = [6 11];     %%% Coefficients of objective function
 A = [2 1; 1 2]; %%% Constrain function coefficients
 b = [104; 76];  %%% Constrain function constants
