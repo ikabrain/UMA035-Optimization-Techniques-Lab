@@ -86,10 +86,12 @@ for i=1:size(points, 1)
     const2(i) = A(2, 1)*points(i, 1) + A(2, 2)*points(i, 2) - b(2);
 end
 
-%%% Step-17: Check unique indices of points where these values don't satisfy their inequalities
+%%% Step-17: Check unique indices of points where these values don't satisfy ALL their constraints
 k1 = find(const1 > 0);
 k2 = find(const2 > 0);
-k = unique([k1 k2]);
+k3 = find(points(:, 1) < 0);
+k4 = find(points(:, 2) < 0);
+k = unique([k1 k2 k3 k4]);
 
 %%% Step-18: Remove those points from soln list
 points(k, :) = [];

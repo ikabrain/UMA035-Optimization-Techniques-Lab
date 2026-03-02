@@ -1,6 +1,6 @@
 %{
-    Maximize/Minimize Z = 3x1 + 2x2
-    Subject to  2x1 + 4x2 <= 8
+    Minimize Z = 3x1 + 2x2
+    Subject to  2x1 + 4x2 >= 8
                 3x1 + 5x2 >= 15
                 x1 >=0 , x2 >= 0
 %}
@@ -10,8 +10,8 @@ clear all;
 clc;
 
 C = [3, 2];
-A = [2, 4; -3, -5];
-b = [8; -15];
+A = [2, 4; 3, 5];
+b = [8; 15];
 
 x1 = 0:max(b);
 x21 = (b(1) - A(1, 1) * x1) ./ A(1, 2);
@@ -63,11 +63,14 @@ for i = 1: size(points, 1)
     cons2(i) = A(2, 1)*px1 + A(2, 2)*px2 - b(2);
 end
 
-k1 = find(cons1 > 0);
-k2 = find(cons2 > 0);
+%%% Constraint changed from filtering out > 0 to removing < 0!!!
+k1 = find(cons1 < 0);
+k2 = find(cons2 < 0);
+%%% As all constraints are >= 0, there's a good chance that we'll have
+%%% faulty points!
 k3 = find(points(:, 1) < 0);
 k4 = find(points(:, 2) < 0);
-k = unique([k1, k2]);
+k = unique([k1, k2, k3, k4]);
 
 points(k, :) = [];
 
@@ -80,10 +83,10 @@ else
         patch(points(K, 1), points(K, 2),[0.9 0.9 1], "FaceAlpha", 0.5, "EdgeColor", "none", "DisplayName", "Feasable Region");
     end
 
-    Z = points * C';
+    z = points * C';
     table = [points, z];
 
-    [optim_z, optim_idx] = max(z);
+    [optim_z, optim_idx] = min(z);
     optim_x1 = points(optim_idx, 1);
     optim_x2 = points(optim_idx, 2);
     fprintf("Optimal value is %.2f at (%.2f, %.2f)\n", optim_z, optim_x1, optim_x2);
