@@ -50,8 +50,8 @@ cx22 = find(x22==0);    %%% x22(77,78,...,105) = 0 i.e. cx22 = [77 78 ... 105]
 line1 = [x1(:, [cx21, cx1]); x21(:, [cx21, cx1])]';     %%% Matrix denoting constraint 1 lying on axes, where col1 = x-coords & col2 = y-coords; each row is ONE PT!
 line2 = [x1(:, [cx22, cx1]); x22(:, [cx22, cx1])]';     %%% Matrix denoting constraint 2 lying on axes, where col1 = x-coords & col2 = y-coords; each row is ONE PT!
 
-%%% Step-9: Remove duplicate points (IMPORTANT) & store in final var
-corpt = unique([line1; line2], "rows");
+%%% Step-9: Store in final var
+corpt = [line1; line2];
 
 %% Phase 4: Find the point(s) of intersection of each pair of constraints
 %%% Step-10: Initialise a soln to both constraints
@@ -76,47 +76,51 @@ end
 ptt = SA';   %%% Transposing the col vector answer to match with the corpt matrix format
 
 %% Phase 5: Combine ALL the corner points
-%%% Step-15: Combine
-allpt = [ptt; corpt];
-%%% Step-16: Remove duplicates (IMPORTANT)
-points = unique(allpt, "rows");
+%%% Step-15: Codmbine & remove duplicates (IMPORTANT)
+points = unique([ptt; corpt], "rows");
 
 %% Phase 6: Filter out points not in feasable region(s)
-%%% Step-17: Find values of constraint at all points
+%%% Step-16: Find values of constraint at all points
 for i=1:size(points, 1)
     const1(i) = A(1, 1)*points(i, 1) + A(1, 2)*points(i, 2) - b(1); %%% points(i, 1) => x1 for point i; points(i, 2) => x2 for point i
     const2(i) = A(2, 1)*points(i, 1) + A(2, 2)*points(i, 2) - b(2);
 end
 
-%%% Step-18: Check unique indices of points where these values don't satisfy their inequalities
+%%% Step-17: Check unique indices of points where these values don't satisfy their inequalities
 k1 = find(const1 > 0);
 k2 = find(const2 > 0);
 k = unique([k1 k2]);
 
-%%% Step-19: Remove those points from soln list
+%%% Step-18: Remove those points from soln list
 points(k, :) = [];
 
-%%% Step-20: Plot feasible corner points
-plot(points(:,1), points(:,2), "bo", "MarkerSize", 5, "MarkerFaceColor", "b", "DisplayName", "Extreme points");   %%% Blue circles with blue fill!
-
-%%% Step-21: Shade feasible region by plotting the polygon formed by feasible points if there are >=3 points
-if size(points,1) >= 3
-    K = convhull(points(:,1), points(:,2));
-    patch(points(K,1), points(K,2), [0.9 0.9 1], 'FaceAlpha', 0.5, 'EdgeColor', 'none', "DisplayName", "Feasable Region");
+%%% Step-19: Check if points is empty i.e. if there exists any feasable
+%%% soln
+if isempty(points)
+    fprintf("There exists no feasable solution.\n");
+else
+    %%% Step-20: Plot feasible corner points
+    plot(points(:,1), points(:,2), "bo", "MarkerSize", 5, "MarkerFaceColor", "b", "DisplayName", "Extreme points");   %%% Blue circles with blue fill!
+    
+    %%% Step-21: Shade feasible region by plotting the polygon formed by feasible points if there are >=3 points
+    if size(points,1) >= 3
+        K = convhull(points(:,1), points(:,2));
+        patch(points(K,1), points(K,2), [0.9 0.9 1], 'FaceAlpha', 0.5, 'EdgeColor', 'none', "DisplayName", "Feasable Region");
+    end
+    %% Phase 7: Compute objective function & find optimal value
+    %%% Step-22: Find value of objective funcn @ each point
+    value = points * C';
+    table = [points value];
+    
+    %%% Step-23: Find OPTIMAL value & point index (max here)
+    [z, index] = max(value);
+    
+    %%% Step-24: Store & display value
+    optimal_x1 = points(index, 1);
+    optimal_x2 = points(index, 2);
+    fprintf("objective value is %.2f at (%.2f, %.2f)\n", z, optimal_x1, optimal_x2);
+    
+    %%% Step-25: Plot & annotate optimal point
+    plot(optimal_x1, optimal_x2, 'kp', 'MarkerSize', 12, 'MarkerFaceColor', 'y', "DisplayName", "Optimal Solution");
+    text(optimal_x1, optimal_x2, sprintf('  (%.2f, %.2f)', optimal_x1, optimal_x2));
 end
-%% Phase 7: Compute objective function & find optimal value
-%%% Step-22: Find value of objective funcn @ each point
-value = points * C';
-table = [points value];
-
-%%% Step-23: Find OPTIMAL value & point index (max here)
-[z, index] = max(value);
-
-%%% Step-24: Store & display value
-optimal_x1 = points(index, 1);
-optimal_x2 = points(index, 2);
-fprintf("objective value is %.2f at (%.2f, %.2f)\n", z, optimal_x1, optimal_x2);
-
-%%% Step-25: Plot & annotate optimal point
-plot(optimal_x1, optimal_x2, 'kp', 'MarkerSize', 12, 'MarkerFaceColor', 'y', "DisplayName", "Optimal Solution");
-text(optimal_x1, optimal_x2, sprintf('  (%.2f, %.2f)', optimal_x1, optimal_x2));
