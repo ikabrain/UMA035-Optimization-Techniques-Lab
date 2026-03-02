@@ -48,6 +48,5 @@ resultTable = [BS val];
 %% Phase 7: Find optimal value & display solution
 [opval, opidx] = max(val);
 optab = resultTable(opidx, :);
-OPTIMAL_BFS = array2table(optab);
-OPTIMAL_BFS.Properties.VariableNames(1:size(OPTIMAL_BFS,2)) = {'x1','x2','x3','x4','Z'};
+OPTIMAL_BFS = array2table(optab, 'VariableNames', {'x1', 'x2', 'x3', 'x4', 'Z'});
 disp(OPTIMAL_BFS);

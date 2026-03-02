@@ -4,50 +4,49 @@
     Min Z = x1 + 2x2 + x3
     s.t. -x1 + x2 + x3 = 3
          2x1 + x2 - x3 = 1
-            x1,x2,x3>=0
-    (Already includes SLACK/SURPLUS added to constraints!)
+            x1,x2,x3 >= 0
+    (Already includes SLACK & SURPLUS added to constraints)
 %}
-
 
 format short;
 clear all;
 clc;
 
-%% Phase I: Input Parameters
-C = [1, 2, 3];              %%% Cost Coefficients
-A = [-1, 1, 1; 2, 1, -1];   %%% Coefficient Matrix
-b = [3; 1];                 %%% Right hand side
+%% Phase 1: Input Parameters
+c = [1 2 1];
+A = [-1 1 1; 2 1 -1];
+b = [3; 1];
 
-%% Phase II: Define no. of variables and no. of constraints
-m = size(A,1); %%% No. of constraints = No of rows
-n = size(A,2); %%% No. of variables   = No of cols
+%% Phase 2: Get no. of constriants & variables
+m = size(A,1); %%% m = No. of constraints = No of rows
+n = size(A,2); %%% n = No. of variables   = No of cols
 
-%% Phase III: To choose nCm Basic solutions
+%% Phase 3: Choose nCm basic solutions
 if(n>m)
     nCm = nchoosek(n,m);    %%% Total no. of Basic solutions
-    pair = nchoosek(1:n,m); %%% Pair of Basic soultions
-    % Phase IV and V: To construct the Basic solution and To check BFS.
-    sol=[]; % Default solution is zero.
-     for i=1:nCm
-        y = zeros(n,1);
-        x = A(:, pair(i, :)) \ b;
-    % To check the feasibility condition
+    t = nchoosek(1:n,m);    %%% Forms Pairs of Basic soultions
+    %% Phase 4: Construct the basic solutions
+    S = [];
+    for i = 1:nCm
+        y = zeros(n,1);         %%% Default soln is zero (all vars are assumed to be non-basic)
+        x = A(:, t(i, :)) \ b;
+    %% Phase 5: Check that soln exists & is feasable
         if all(x>=0 & x~=inf & x~=-inf)
-            y(pair(i, :)) = x;
-            sol = [sol, y];
+            y(t(i, :)) = x;     %%% Makes basic solns non-zero!    
+            S = [S y];
         end
     end
+    BS = S';
 else
     error('nCm does not exists')
 end
 
-%% Phase VI: To find the objective function value
-Z = C*sol;
-% find the optimal value
-[Zmin, Zindex] = min(Z);
-bfs = sol(:,Zindex);
+%% Phase 6: Compute objective function
+val = BS * c';
+resultTable = [BS val];
 
-%% Phase VII: To print all the solutions
-optimal_value = [bfs' Zmin];
-optimal_bfs = array2table(optimal_value);
-optimal_bfs.Properties.VariableNames(1:size(optimal_bfs,2)) = {'x_1', 'x_2', 'x_3', 'Z'}
+%% Phase 7: Find optimal value & display solution
+[opval, opidx] = max(val);
+optab = resultTable(opidx, :);
+OPTIMAL_BFS = array2table(optab, 'VariableNames', {'x1', 'x2', 'x3', 'Z'});
+disp(OPTIMAL_BFS);
