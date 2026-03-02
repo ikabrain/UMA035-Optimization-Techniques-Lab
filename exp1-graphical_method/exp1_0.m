@@ -19,7 +19,7 @@ A = [2 1; 1 2]; %%% Constrain function coefficients
 b = [104; 76];  %%% Constrain function constants
 %% Phase 2: Plot graph
 %%% Step-2: Select range of x1>=0 in which graph is plotted
-x1 = 0:max(b);  %%% x1 is a 1 x 104 row vector matrix!
+x1 = 0:1:max(b);  %%% x1 is a 1 x 104 row vector matrix!
 
 %%% Step-3: Find values of x2i from ith constraint
 x21 = (b(1) - A(1, 1) * x1) ./ A(1, 2); %%% 2x1 + 1x2 = 104 ==> x2 = (104 - 2*x1) / 1 = 1 x 104 row matrix
