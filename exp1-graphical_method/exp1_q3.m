@@ -9,7 +9,7 @@ format short;
 clear all;
 clc;
 
-C = [3 2];
+c = [3 2];
 A = [2 4; 3 5];
 b = [8; 15];
 
@@ -80,7 +80,7 @@ else
         patch(points(K, 1), points(K, 2),[0.9 0.9 1], 'FaceAlpha', 0.5, 'EdgeColor', 'none', 'DisplayName', 'Feasable Region');
     end
 
-    val = points * C';
+    val = points * c';
     resultTable = [points val];
 
     [minval, minidx] = min(val);

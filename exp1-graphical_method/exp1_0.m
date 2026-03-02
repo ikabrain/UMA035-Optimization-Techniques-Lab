@@ -15,7 +15,7 @@ clc;
 %%% Step-1: Let in canonical form,
 %%% Max Z = C'X
 %%% subject to AX <= b
-C = [6 11];     %%% Coefficients of objective function
+c = [6 11];     %%% Coefficients of objective function
 A = [2 1; 1 2]; %%% Constrain function coefficients
 b = [104; 76];  %%% Constrain function constants
 %% Phase 2: Plot graph
@@ -68,8 +68,8 @@ for i = 1:size(A, 1)
         %%% Step-13: Use X = inv(A) / b to solve for point of intersection & store in temp soln
         A1 = [s1; s2];
         B1 = [b1; b2];        
-        X = A1 \ B1;          %%% Returns a COLUMN vector
-        SA = [SA X];
+        x1 = A1 \ B1;          %%% Returns a COLUMN vector
+        SA = [SA x1];
     end
 end
 
@@ -112,7 +112,7 @@ else
     end
     %% Phase 7: Compute objective function
     %%% Step-22: Find value of objective funcn @ each point
-    val = points * C'; %%% Returns a COLUMN VECTOR where each row = value @ point!
+    val = points * c'; %%% Returns a COLUMN VECTOR where each row = value @ point!
     resultTable = [points val];
 
     %% Phase 8: Find optimal value & display solution
