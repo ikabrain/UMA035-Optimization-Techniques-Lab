@@ -2,17 +2,14 @@ clc
 clear all
 format short
 % To solve the LPP by Simplex Method
-%Min z=x1-3x2+2x3
-%Subject to 3x1-x2+2x3<=7
-%-2x1+4x2<=12
-%-4x1+3x2+8x3<=10
-%x1,x2,x3>=0
-%First to change the objective function from minimization to maximization
-%Max z=-x1+3x2-2x3
+%Max z=2x1+4x2
+%Subject to x1 + x2 <= 3
+%2x1+4x2<=8
+%x1,x2>=0
 %To input Parameters
-C=[-1 3 -2];
-info=[3 -1 2; -2 4 0; -4 3 8];
-b=[7; 12; 10];
+C=[2 4];
+info=[1 1; 2 4];
+b=[3; 8];
 NOVariables=size(info,2);
 s=eye(size(info,1));
 A=[info s b];
@@ -25,7 +22,7 @@ ZRow=Cost(BV)*A-Cost;
 %To print the table
 ZjCj=[ZRow;A];
 SimpTable=array2table(ZjCj);
-SimpTable.Properties.VariableNames(1:size(ZjCj,2)) = {'x_1','x_2','x_3','s_1','s_2','s_3','Sol'}
+SimpTable.Properties.VariableNames(1:size(ZjCj,2)) = {'x_1','x_2','s_1','s_2','Sol'}
 %Simplex Table starts
 Run=true;
 while Run
@@ -74,12 +71,12 @@ while Run
             %To print the table
             ZjCj=[ZRow;A];
             SimpTable=array2table(ZjCj);
-            SimpTable.Properties.VariableNames(1:size(ZjCj,2)) = {'x_1','x_2','x_3','s_1','s_2','s_3','Sol'}
+            SimpTable.Properties.VariableNames(1:size(ZjCj,2)) = {'x_1','x_2','s_1','s_2','Sol'}
             BFS=zeros(1,size(A,2));
             BFS(BV)=A(:,end);
             BFS(end)=sum(BFS.*Cost);
             CurrentBFS=array2table(BFS);
-            CurrentBFS.Properties.VariableNames(1:size(CurrentBFS,2)) = {'x_1','x_2','x_3','s_1','s_2','s_3','Sol'}
+            CurrentBFS.Properties.VariableNames(1:size(CurrentBFS,2)) = {'x_1','x_2','s_1','s_2','Sol'}
         end
     else
         Run=false;
