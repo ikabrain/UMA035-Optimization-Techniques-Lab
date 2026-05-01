@@ -29,35 +29,42 @@ else
         Cost(end+1, :) = zeros(1, size(B, 2))
         A(end+1) = sum(B) - sum(A)
     elseif sum(B)<sum(A)
-        Cost(:, end+1) = zeros(1, size(A, 2))
+        Cost(:, end+1) = zeros(size(A, 2), 1)
         B(end+1) = sum(A) - sum(B)
     end
 end
 %% Phase 3: Initial allocation
 ICost = Cost;
 X = zeros(size(Cost));  % Initialize allocation
+
 [m, n] = size(Cost);     % Finding No. of rows and columns
 BFS = m + n - 1;            % Total No. of BFS
 %% Phase 4: Allocating to cells with minimum cost
-for i=1:size(Cost,1)
-    for j=1:size(Cost,2)
-        hh = min(Cost(:));                          % Finding minimum cost value
-        [Row_index, Col_index] = find(hh==Cost);    % Finding position of minimum cost cell
-        x11 = min(A(Row_index), B(Col_index));
-        [Value,index] = max(x11);   % Find maximum allocation
-        ii = Row_index(index);      % Identify Row Position
-        jj = Col_index(index);      % Identify Column Position
-        y11 = min(A(ii), B(jj));     % Find the value
-        X(ii,jj) = y11;
-        A(ii) = A(ii) - y11;
-        B(jj) = B(jj) - y11;
-        Cost(ii,jj) = Inf; % Removing row/col already alloted by making remaining cost infinity
+for i=1:BFS
+    hh = min(Cost(:));                          % Finding minimum cost value
+    [Row_index, Col_index] = find(hh==Cost);    % Finding position of minimum cost cell
+    
+    x11 = min(A(Row_index), B(Col_index));
+    [Value,index] = max(x11);   % Find maximum allocation
+    ii = Row_index(index);      % Identify Row Position
+    jj = Col_index(index);      % Identify Column Position
+    y11 = min(A(ii), B(jj));     % Find the value
+    
+    X(ii,jj) = y11;
+    A(ii) = A(ii) - y11;
+    B(jj) = B(jj) - y11;
+    
+    if A(ii) == 0 && B(jj) == 0
+        Cost(ii,:) = Inf;    % Degenerate: eliminate row, keep col (or vice versa)
+    elseif A(ii) == 0
+        Cost(ii,:) = Inf;    % Eliminate exhausted row
+    elseif B(jj) == 0
+        Cost(:,jj) = Inf;    % Eliminate exhausted column
     end
 end
 %% Phase 5: Print initial BFS
 fprintf('Initial BFS =\n');
-IBFS = array2table(X);
-disp(IBFS);
+disp(X);
 %% Phase 6: Check for Degenerate and Non Degenerate
 TotalBFS = length(nonzeros(X));
 if TotalBFS == BFS
