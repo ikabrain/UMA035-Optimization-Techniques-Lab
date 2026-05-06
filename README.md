@@ -35,9 +35,11 @@ This repository contains all **lab assignments and experiments** completed as pa
 ### 📑 Reference
 
 - [Lab Manual](./lab_manual.pdf)
+- Garg, H. \[Dr. Harish Garg\]. (n.d.). MATLAB codes optimization techniques \[YouTube playlist\]. YouTube. Retrieved April 21, 2026, from https://www.youtube.com/playlist?list=PLO-6jspot8AKQVat4Vl9_mxsh0r5E9dN1
 
 ---
 
 ### ⚠️ NOTE
 
 This repository is intended for **academic and learning purposes only**.
+
